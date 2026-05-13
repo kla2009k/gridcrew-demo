@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GridCrew — LINE Bot Interactive Mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: #1a1d29;
+  color: #fff;
+  min-height: 100vh;
+  padding: 20px;
+}
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.header h1 {
+  font-size: 28px;
+  background: linear-gradient(90deg, #00B900, #2563eb);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.header p {
+  color: #888;
+  font-size: 14px;
+}
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 10px 20px;
+  border: 1px solid #2563eb;
+  background: transparent;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.btn:hover { background: #2563eb; }
+.btn.active { background: #2563eb; }
+.btn.scenario-btn { border-color: #00B900; }
+.btn.scenario-btn:hover, .btn.scenario-btn.active { background: #00B900; }
+
+.workspace {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Phone */
+.phone {
+  width: 380px;
+  height: 780px;
+  background: #000;
+  border-radius: 38px;
+  padding: 14px;
+  position: sticky;
+  top: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.phone-screen {
+  background: #f0f0f0;
+  border-radius: 28px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.line-header {
+  background: #00B900;
+  padding: 14px 16px 10px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.line-header .avatar {
+  width: 36px; height: 36px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: bold; color: #00B900; font-size: 14px;
+}
+.line-header .info { flex: 1; }
+.line-header .name { font-weight: 600; font-size: 15px; }
+.line-header .status { font-size: 11px; opacity: 0.9; }
+
+.chat {
+  flex: 1;
+  background: #8FB6E1;
+  padding: 10px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.msg {
+  max-width: 75%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+  animation: slideIn 0.3s ease;
+  word-wrap: break-word;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.msg.user {
+  background: #00B900;
+  color: #fff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+.msg.bot {
+  background: #fff;
+  color: #1a1a1a;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.msg.bot.flex {
+  background: #fff;
+  padding: 0;
+  width: 90%;
+  max-width: 90%;
+  overflow: hidden;
+}
+.flex-header {
+  background: #0a2540;
+  color: #fff;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.flex-body { padding: 12px; }
+.flex-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  font-size: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.flex-row:last-child { border: none; }
+.flex-label { color: #666; }
+.flex-value { color: #1a1a1a; font-weight: 500; }
+.flex-section-title {
+  font-weight: 600;
+  font-size: 12px;
+  color: #0a2540;
+  margin: 8px 0 4px 0;
+}
+.flex-confidence {
+  background: linear-gradient(90deg, #10b981, #059669);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+  margin: 8px 0;
+}
+.flex-reason {
+  background: #f0f9ff;
+  border-left: 3px solid #2563eb;
+  padding: 6px 8px;
+  font-size: 11px;
+  margin: 8px 0;
+  color: #0a2540;
+}
+.flex-buttons {
+  display: flex;
+  gap: 6px;
+  padding: 0 12px 12px;
+}
+.flex-btn {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.flex-btn.confirm { background: #00B900; color: #fff; }
+.flex-btn.confirm:hover { background: #009900; }
+.flex-btn.alt { background: #e5e7eb; color: #1a1a1a; }
+.flex-btn.alt:hover { background: #d1d5db; }
+.flex-success {
+  background: #10b981;
+  color: #fff;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 13px;
+}
+.flex-list { padding-left: 14px; margin: 4px 0; font-size: 11px; color: #1a1a1a; }
+.flex-list li { margin: 2px 0; }
+
+.input-area {
+  background: #fff;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #ddd;
+}
+.input-box {
+  flex: 1;
+  padding: 8px 12px;
+  background: #f0f0f0;
+  border-radius: 18px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* Side panel */
+.side-panel {
+  background: #2a2d3a;
+  border-radius: 12px;
+  padding: 24px;
+  min-height: 600px;
+}
+.side-panel h2 {
+  color: #fff;
+  font-size: 20px;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 8px;
+}
+.side-panel .scenario-info {
+  background: #1a1d29;
+  border-left: 4px solid #00B900;
+  padding: 14px;
+  border-radius: 6px;
+  margin: 14px 0;
+}
+.side-panel .scenario-info h3 {
+  color: #00B900;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.side-panel .scenario-info p {
+  color: #ccc;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.step-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 14px 0;
+}
+.step-num {
+  background: #2563eb;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.step-title {
+  color: #fff;
+  font-size: 14px;
+}
+.tech-section {
+  background: #1a1d29;
+  padding: 14px;
+  border-radius: 6px;
+  margin-top: 16px;
+}
+.tech-section h4 {
+  color: #2563eb;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.tech-section p {
+  color: #aaa;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 4px 0;
+}
+.tech-section code {
+  background: #0a0c14;
+  color: #00B900;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+  margin-top: 20px;
+}
+.legend-item {
+  background: #1a1d29;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #2563eb;
+}
+.legend-item .key {
+  color: #2563eb;
+  font-size: 11px;
+  font-weight: 600;
+}
+.legend-item .val {
+  color: #fff;
+  font-size: 13px;
+  margin-top: 2px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>GridCrew — LINE Bot Interactive Mockup</h1>
+    <p>Conversation flow demo สำหรับ PEA Hackathon 2026 | Track 3: Substation Resource & Workforce Optimization</p>
+  </div>
+
+  <div class="controls">
+    <button class="btn scenario-btn active" onclick="loadScenario(1)" id="btn-s1">Scenario 1: ปกติ</button>
+    <button class="btn scenario-btn" onclick="loadScenario(2)" id="btn-s2">Scenario 2: Constrained</button>
+    <button class="btn scenario-btn" onclick="loadScenario(3)" id="btn-s3">Scenario 3: Urgent</button>
+    <button class="btn" onclick="resetChat()">⟲ Reset</button>
+    <button class="btn" onclick="autoplay()">▶ Auto Play</button>
+  </div>
+
+  <div class="workspace">
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="line-header">
+          <div class="avatar">G</div>
+          <div class="info">
+            <div class="name">GridCrew Bot</div>
+            <div class="status">● online</div>
+          </div>
+        </div>
+        <div class="chat" id="chat"></div>
+        <div class="input-area">
+          <div class="input-box">พิมพ์ข้อความ...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <h2 id="panel-title">Scenario 1: รับงาน Relay Test ปกติ</h2>
+
+      <div class="scenario-info" id="scenario-desc">
+        <h3>📋 สถานการณ์</h3>
+        <p>หัวหน้าแผนก ได้รับคำขอทำ Relay Test ที่สถานีราชบุรี เสาร์นี้ — ต้องการรู้ว่าทีมและอุปกรณ์พร้อมรับงานหรือไม่ในวินาทีเดียว</p>
+      </div>
+
+      <div class="step-info">
+        <div class="step-num" id="step-num">Step 1/4</div>
+        <div class="step-title" id="step-title">หัวหน้าแผนกพิมพ์คำถามเข้า LINE</div>
+      </div>
+
+      <div class="tech-section">
+        <h4>🔧 ที่เกิดขึ้น Backend</h4>
+        <p id="tech-desc">รอ user input...</p>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <div class="key">⚡ Response Time</div>
+          <div class="val">≤ 90 วินาที</div>
+        </div>
+        <div class="legend-item">
+          <div class="key">🤖 Algorithm</div>
+          <div class="val">Rule-based (Explainable)</div>
+        </div>
+        <div class="legend-item">
+          <div class="key">📊 Score Formula</div>
+          <div class="val">Skill 35% + Avail 30% + Prox 20% + Load 15%</div>
+        </div>
+        <div class="legend-item">
+          <div class="key">🔒 Security</div>
+          <div class="val">LINE userID + RBAC + RLS</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const scenarios = {
+  1: {
+    title: "Scenario 1: รับงาน Relay Test ปกติ",
+    desc: "หัวหน้าแผนก ได้รับคำขอทำ Relay Test ที่สถานีราชบุรี เสาร์นี้ — ต้องการรู้ว่าทีมและอุปกรณ์พร้อมรับงานหรือไม่ในวินาทีเดียว",
+    steps: [
+      {
+        from: 'user',
+        text: 'Relay Test เสาร์นี้ ราชบุรี ใครว่าง',
+        title: 'หัวหน้าแผนกพิมพ์คำถามเข้า LINE',
+        tech: 'LINE webhook → FastAPI receive message → forward to NLU parser'
+      },
+      {
+        from: 'bot',
+        text: '⏳ กำลังประมวลผล...',
+        title: 'Bot ประมวลผล (~6-11 วินาที)',
+        tech: 'Claude API parse: type=Relay Test, date=2026-05-16, location=ราชบุรี → query DB → run algorithm'
+      },
+      {
+        from: 'flex',
+        title: 'Bot ส่ง recommendation พร้อมเหตุผล',
+        tech: 'Algorithm score 4 candidates → top match: skill=1.0, avail=1.0, prox=0.8, load=0.6 → confidence 94%',
+        flex: {
+          header: '✅ ทีมที่แนะนำ',
+          confidence: '⚡ ความพร้อม: 94%',
+          rows: [
+            { section: '👥 ทีม' },
+            { value: 'วิศวกร: สมชาย (Relay certified ✓ | ว่างทั้งวัน ✓)' },
+            { value: 'ช่างเทคนิค: สมหญิง (ว่าง ✓)' },
+            { value: 'ผู้ช่วย: สมศรี (ว่าง ✓)' },
+            { section: '🔧 อุปกรณ์' },
+            { value: 'Relay Test Set #2 พร้อม + Multimeter' },
+            { section: '🚗 รถ' },
+            { value: 'Pickup #5 ว่าง' },
+            { section: '💰 ค่าใช้จ่าย (ประมาณ)' },
+            { value: '18,500 บาท' }
+          ],
+          reason: '<strong>เหตุผล:</strong><br>• ทุกคนในทีมว่างวันที่ระบุ<br>• อุปกรณ์ครบและ calibrated<br>• ทีมประจำเขตใกล้พื้นที่งาน',
+          buttons: ['✅ ยืนยัน', '🔄 ดูตัวเลือกอื่น']
+        }
+      },
+      {
+        from: 'success',
+        text: '✅ ยืนยันงานแล้ว<br>📩 ส่ง LINE notification ให้ สมชาย, สมหญิง, สมศรี<br>🔒 Lock ทรัพยากร: Reserved',
+        title: 'หัวหน้าแผนกกด ✅ ยืนยัน',
+        tech: 'Update DB: jobs.status=confirmed | personnel.status=Reserved | LINE multicast notification'
+      }
+    ]
+  },
+  2: {
+    title: "Scenario 2: Constrained — บางทรัพยากรไม่ว่าง",
+    desc: "งาน Relay Test แต่อุปกรณ์ Relay Test Set #2 ติด calibration — ระบบต้องเสนอ alternative",
+    steps: [
+      {
+        from: 'user',
+        text: 'Relay Test พุธหน้า ขอนแก่น ใครว่าง',
+        title: 'หัวหน้าแผนกพิมพ์คำถามเข้า LINE',
+        tech: 'LINE webhook → parse: date=2026-05-20, location=ขอนแก่น'
+      },
+      {
+        from: 'bot',
+        text: '⏳ กำลังประมวลผล...',
+        title: 'Bot พบว่าอุปกรณ์หลักไม่ว่าง',
+        tech: 'Algorithm พบ: Relay Test Set #2 calibration จนถึง 21 พ.ค. → fallback ถึง alternative equipment'
+      },
+      {
+        from: 'flex',
+        title: 'Bot ส่ง alternative recommendation',
+        tech: 'Score ลดลง 84% เพราะใช้อุปกรณ์ลำดับสำรอง — แสดง trade-off ชัดเจน',
+        flex: {
+          header: '⚠️ ทีมที่แนะนำ (มีข้อจำกัด)',
+          confidence: '⚡ ความพร้อม: 84%',
+          rows: [
+            { section: '👥 ทีม' },
+            { value: 'วิศวกร: สมศักดิ์ (Relay certified ✓)' },
+            { value: 'ช่างเทคนิค: สมหวัง (ว่าง ✓)' },
+            { section: '🔧 อุปกรณ์ (alternative)' },
+            { value: 'Relay Test Set #5 (สำรอง — slower 30%)' },
+            { section: '⚠️ ข้อจำกัด' },
+            { value: 'Set #2 ติด calibration ถึง 21 พ.ค.' },
+            { section: '💰 ค่าใช้จ่าย (ประมาณ)' },
+            { value: '21,000 บาท (เพิ่ม 13%)' }
+          ],
+          reason: '<strong>เหตุผล:</strong><br>• อุปกรณ์หลัก (#2) ไม่ว่าง<br>• ทางเลือก: ใช้ #5 หรือ delay งาน 1 สัปดาห์',
+          buttons: ['✅ ยืนยันใช้ #5', '⏸ Delay 1 สัปดาห์']
+        }
+      },
+      {
+        from: 'success',
+        text: '⏸ Delay งานไปเป็นวันที่ 27 พ.ค.<br>📋 เพิ่มในรายการรอ — alert เมื่ออุปกรณ์พร้อม',
+        title: 'หัวหน้าแผนกเลือก Delay เพื่อใช้อุปกรณ์หลัก',
+        tech: 'DB: jobs.status=scheduled | calibration_alert subscribed | smart trade-off support'
+      }
+    ]
+  },
+  3: {
+    title: "Scenario 3: Urgent — งานเร่งด่วน",
+    desc: "อุปกรณ์ที่หม้อแปลง substation พัง — ต้องส่งทีมไปแก้ทันที — escalation flow",
+    steps: [
+      {
+        from: 'user',
+        text: 'ด่วน! หม้อแปลง #14 ที่ลำปาง overheated ต้องไปทันที',
+        title: 'หัวหน้าแผนกแจ้งเหตุด่วน',
+        tech: 'LINE webhook → NLU detect keyword "ด่วน" → trigger urgent workflow'
+      },
+      {
+        from: 'bot',
+        text: '🚨 รับเรื่อง — กำลังประมวลผล urgent dispatch',
+        title: 'Bot trigger emergency mode',
+        tech: 'Algorithm: skip schedule check → find nearest available team < 50km → highest priority'
+      },
+      {
+        from: 'flex',
+        title: 'Bot ส่ง urgent dispatch plan',
+        tech: 'Override: workload constraint relaxed สำหรับ critical event | escalation to manager',
+        flex: {
+          header: '🚨 URGENT — Dispatch Plan',
+          confidence: '⚡ Response: ออกได้ภายใน 30 นาที',
+          rows: [
+            { section: '👥 ทีมที่ใกล้ที่สุด' },
+            { value: 'วิศวกร: สมพร (ที่ปฏิบัติงานเขตเชียงใหม่ — 45km)' },
+            { value: 'ช่างเทคนิค: สมยศ (ว่าง — เขตลำปาง)' },
+            { section: '🔧 อุปกรณ์ฉุกเฉิน' },
+            { value: 'Transformer Diagnosis Kit #1' },
+            { value: 'Spare Cooling Fan (ส่วนกลาง)' },
+            { section: '🚗 รถ' },
+            { value: 'Service Van #8 (ว่าง)' },
+            { section: '⚠️ Escalation' },
+            { value: 'แจ้งผู้บริหารแล้ว' }
+          ],
+          reason: '<strong>เหตุผล (urgent mode):</strong><br>• สมพร อยู่ใกล้สุด แม้ติดงานอื่น (re-prioritize)<br>• Spare Cooling Fan พร้อมส่งจากส่วนกลาง',
+          buttons: ['✅ ส่งทีมเดี๋ยวนี้', '📞 โทรหาทีม']
+        }
+      },
+      {
+        from: 'success',
+        text: '🚨 ทีม dispatched<br>📩 LINE alert → สมพร, สมยศ + ผู้บริหาร<br>📍 GPS tracking link ส่งให้ทีมแล้ว',
+        title: 'ทีม dispatched ภายใน 30 นาที',
+        tech: 'Multi-channel alert: LINE + SMS backup | live update channel created'
+      }
+    ]
+  }
+};
+
+let currentScenario = 1;
+let currentStep = 0;
+
+function loadScenario(n) {
+  currentScenario = n;
+  currentStep = 0;
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-s' + n).classList.add('active');
+  resetChat();
+  const sc = scenarios[n];
+  document.getElementById('panel-title').textContent = sc.title;
+  document.getElementById('scenario-desc').innerHTML = `<h3>📋 สถานการณ์</h3><p>${sc.desc}</p>`;
+  nextStep();
+}
+
+function resetChat() {
+  document.getElementById('chat').innerHTML = '';
+  currentStep = 0;
+}
+
+function nextStep() {
+  const sc = scenarios[currentScenario];
+  if (currentStep >= sc.steps.length) return;
+  const step = sc.steps[currentStep];
+  const chat = document.getElementById('chat');
+
+  let msg;
+  if (step.from === 'user') {
+    msg = document.createElement('div');
+    msg.className = 'msg user';
+    msg.textContent = step.text;
+  } else if (step.from === 'bot') {
+    msg = document.createElement('div');
+    msg.className = 'msg bot';
+    msg.innerHTML = step.text;
+  } else if (step.from === 'success') {
+    msg = document.createElement('div');
+    msg.className = 'msg bot flex';
+    msg.innerHTML = `<div class="flex-success">${step.text}</div>`;
+  } else if (step.from === 'flex') {
+    msg = document.createElement('div');
+    msg.className = 'msg bot flex';
+    let bodyHtml = '';
+    step.flex.rows.forEach(r => {
+      if (r.section) bodyHtml += `<div class="flex-section-title">${r.section}</div>`;
+      else bodyHtml += `<div class="flex-row"><span class="flex-value">${r.value}</span></div>`;
+    });
+    msg.innerHTML = `
+      <div class="flex-header">${step.flex.header}</div>
+      <div class="flex-body">
+        ${bodyHtml}
+        <div class="flex-confidence">${step.flex.confidence}</div>
+        <div class="flex-reason">${step.flex.reason}</div>
+      </div>
+      <div class="flex-buttons">
+        <button class="flex-btn confirm" onclick="nextStep()">${step.flex.buttons[0]}</button>
+        <button class="flex-btn alt" onclick="nextStep()">${step.flex.buttons[1]}</button>
+      </div>`;
+  }
+
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+
+  document.getElementById('step-num').textContent = `Step ${currentStep + 1}/${sc.steps.length}`;
+  document.getElementById('step-title').textContent = step.title;
+  document.getElementById('tech-desc').textContent = step.tech;
+
+  currentStep++;
+
+  // auto advance for non-interactive steps (user/bot/success)
+  if (step.from === 'user' || step.from === 'bot' || step.from === 'success') {
+    setTimeout(nextStep, 1500);
+  }
+}
+
+function autoplay() {
+  resetChat();
+  currentStep = 0;
+  nextStep();
+}
+
+// init
+loadScenario(1);
+</script>
+</body>
+</html>
